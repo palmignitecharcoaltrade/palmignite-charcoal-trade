@@ -1,7 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Instagram, Mail, MapPin, Phone } from "lucide-react";
-import { ChevronDown, Sparkles } from "lucide-react";
-import * as Tooltip from "@radix-ui/react-tooltip"; // ⬅️ Tambahan import
 
 interface FooterProps {
   mobileMap?: React.ReactNode;
@@ -11,7 +9,7 @@ const Footer: React.FC<FooterProps> = ({ mobileMap }) => {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-charcoal pt-8 border-t border-border">
+    <footer className="bg-charcoal pt-6 border-t border-border">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row gap-6 md:gap-24 py-5 mb-10 items-start">
           <div>

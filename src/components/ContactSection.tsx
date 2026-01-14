@@ -1,300 +1,218 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Send, X } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
+import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { SectionHeader } from "./ui/corporate/SectionHeader";
+import { CorporateCard } from "./ui/corporate/CorporateCard";
 
-interface ContactSectionProps {
-  onMobileMapChange?: (mapElement: React.ReactNode | null) => void;
-}
-
-const ContactSection: React.FC<ContactSectionProps> = ({ onMobileMapChange }) => {
+const ContactSection = () => {
   const { t } = useLanguage();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-    agree: false,
-  });
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-
-  const [popup, setPopup] = useState<{ visible: boolean; message: string; type: "success" | "error" }>({
-    visible: false,
-    message: "",
-    type: "success",
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => entry.isIntersecting && setIsVisible(true), { threshold: 0.2 });
-    if (sectionRef.current) observer.observe(sectionRef.current);
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
     return () => {
-      if (sectionRef.current) observer.unobserve(sectionRef.current);
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
     };
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-
-    // ✅ Khusus untuk phone
-    if (name === "phone") {
-      let numberOnly = value.replace(/\D/g, "");
-      numberOnly = numberOnly.slice(0, 15);
-      const formatted = "+" + numberOnly;
-      setFormData({ ...formData, [name]: formatted });
-      return;
-    }
-
-    // ✅ Update input lain (name, email, message, dll)
-    setFormData({ ...formData, [name]: value });
+  const formatPhoneNumber = (value: string) => {
+    const numbers = value.replace(/\D/g, "");
+    if (numbers.length <= 3) return numbers;
+    if (numbers.length <= 6) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+    return `${numbers.slice(0, 3)}-${numbers.slice(3, 6)}-${numbers.slice(6, 10)}`;
   };
 
-  const handlePhoneFocus = () => {
-    // Kalau belum ada nilai, isi otomatis dengan "+"
-    if (!formData.phone) {
-      setFormData((prev) => ({ ...prev, phone: "+" }));
-    }
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    setPhoneNumber(formatted);
   };
 
-  const handlePhoneBlur = () => {
-    // Kalau cuma ada "+", reset jadi kosong lagi
-    if (formData.phone === "+") {
-      setFormData((prev) => ({ ...prev, phone: "" }));
-    }
-  };
-
-  const validateForm = () => {
-    if (!formData.name.trim()) return "Please enter your full name.";
-    if (!formData.email.trim()) return "Please enter your email address.";
-    if (!/\S+@\S+\.\S+/.test(formData.email)) return "Please enter a valid email address.";
-
-    if (!formData.phone.trim()) return "Please enter your phone number.";
-
-    // ✅ Ambil hanya angka (abaikan simbol +)
-    const numberOnly = formData.phone.replace(/\D/g, "");
-
-    // ✅ Minimal 8 digit
-    if (numberOnly.length < 8) return "Please enter a valid phone number (minimum 8 digits).";
-
-    // ✅ Maksimal 15 digit berdasarkan standar internasional E.164
-    if (numberOnly.length > 15) return "Please enter a valid phone number (maximum 15 digits).";
-
-    if (!formData.message.trim()) return "Please enter your message.";
-    return null;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formRef.current) return;
 
-    const errorMsg = validateForm();
-    if (errorMsg) {
-      setPopup({ visible: true, message: errorMsg, type: "error" });
-      return;
-    }
+    setIsSubmitting(true);
 
-    emailjs.sendForm("service_f935qwz", "template_3gp8qxc", formRef.current, "pxJzSyZ19cVMH5e11").then(
-      () => {
-        setPopup({ visible: true, message: "Message sent successfully!", type: "success" });
-        setFormData({ name: "", email: "", phone: "", message: "", agree: false });
-      },
-      (error) => {
-        console.error("FAILED...", error.text);
-        setPopup({ visible: true, message: "Failed to send message. API nya error brok wkwkkw", type: "error" });
-      }
-    );
+    try {
+      await emailjs.sendForm(
+        "service_91q839e",
+        "template_8l4j7uo",
+        formRef.current,
+        "user_mJ3q7Xk8y9z0pL1n2"
+      );
+      toast.success("Message sent successfully!");
+      formRef.current.reset();
+      setPhoneNumber("");
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.");
+      console.error("EmailJS Error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const mapIframe = (
-    <div className={`rounded-xl mb-6 p-1 bg-gold/20 transition-all duration-1000 ease-out ${isVisible ? "opacity-100 blur-0" : "opacity-0 blur-lg"}`}>
-      <div className="rounded-xl overflow-hidden">
-        <iframe
-          title="My Embedded Google Map"
-          src="https://maps.google.com/maps?width=600&height=400&hl=en&q=Yogyakarta&t=&z=15&ie=UTF8&iwloc=B&output=embed"
-          width="100%"
-          height="400"
-          style={{ border: 0 }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        ></iframe>
-      </div>
-    </div>
-  );
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setPopup((prev) => ({ ...prev, visible: false }));
-      }
-    };
-
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, []);
-  useEffect(() => {
-    const handleEnter = (e: KeyboardEvent) => {
-      // Kalau user lagi fokus di textarea
-      if (document.activeElement?.tagName === "TEXTAREA") {
-        // Shift+Enter = normal newline
-        if (e.shiftKey) return;
-
-        // Enter = submit form
-        if (e.key === "Enter") {
-          e.preventDefault();
-          if (formRef.current) formRef.current.requestSubmit();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleEnter);
-    return () => window.removeEventListener("keydown", handleEnter);
-  }, []);
-
-  useEffect(() => {
-    if (onMobileMapChange) {
-      onMobileMapChange(isMobile ? mapIframe : null);
-    }
-  }, [isMobile]);
-
   return (
-    <section id="contact" ref={sectionRef} className="py-24 md:py-32 bg-gradient-to-b from-secondary to-background relative">
-      {popup.visible && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 w-80 shadow-xl relative animate-fadeIn">
-            <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:hover:text-white" onClick={() => setPopup({ ...popup, visible: false })}>
-              <X className="w-5 h-5" />
-            </button>
-            <h3 className={`text-lg font-semibold mb-2 ${popup.type === "success" ? "text-green-600" : "text-red-600"}`}>{popup.type === "success" ? "Success!" : "Information!"}</h3>
-            <p className="text-gray-700 dark:text-gray-300">{popup.message}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-96 bg-gold/5 blur-3xl rounded-full" />
-
+    <section id="contact" ref={sectionRef} className="py-16 md:py-24 bg-background relative">
       <div className="container mx-auto px-4 relative">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-              <p className="text-gold font-semibold mb-3 tracking-wide uppercase text-sm">Get In Touch</p>
-              <h2 className="font-[Onest] text-4xl md:text-5xl font-bold text-foreground mb-4">{t("contact.title")}</h2>
-              <p className="text-muted-foreground text-lg">{t("contact.subtitle")}</p>
-            </div>
-          </div>
+        <SectionHeader 
+          label="Get in Touch"
+          title={t("contact.title")}
+          subtitle={t("contact.subtitle")}
+        />
 
-          <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            <div className="grid lg:grid-cols-5 gap-8">
-              <div className="lg:col-span-3 order-1 lg:order-2">
-                <form ref={formRef} noValidate className="glass-card p-8 rounded-2xl backdrop-blur-sm bg-card/40 border border-glass-border space-y-6" onSubmit={handleSubmit}>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-5 gap-8">
+            <div className="lg:col-span-3 order-1 lg:order-2">
+              <CorporateCard className="p-8 border-white/10 bg-white/5">
+                <form ref={formRef} noValidate className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-medium text-foreground">
-                        Full Name
+                      <label htmlFor="name" className="text-sm font-medium text-gray-300">
+                        {t("contact.form.name")}
                       </label>
-                      <Input
+                      <input
                         id="name"
-                        name="name"
-                        placeholder="Your Full Name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground focus:border-gold h-12 rounded-xl"
+                        name="user_name"
+                        type="text"
+                        required
+                        className="w-full h-12 px-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition-all outline-none"
+                        placeholder="John Doe"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium text-foreground">
-                        Email Address
+                      <label htmlFor="email" className="text-sm font-medium text-gray-300">
+                        {t("contact.form.email")}
                       </label>
-                      <Input
+                      <input
                         id="email"
-                        name="email"
+                        name="user_email"
                         type="email"
-                        placeholder="your@email.com"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground focus:border-gold h-12 rounded-xl"
+                        required
+                        className="w-full h-12 px-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition-all outline-none"
+                        placeholder="john@example.com"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="phone" className="text-sm font-medium text-foreground">
-                      Phone Number
+                    <label htmlFor="phone" className="text-sm font-medium text-gray-300">
+                      Phone Number (Optional)
                     </label>
-                    <Input
+                    <input
                       id="phone"
-                      name="phone"
+                      name="user_phone"
                       type="tel"
-                      placeholder="Your country code  phone number"
-                      value={formData.phone}
-                      onFocus={handlePhoneFocus}
-                      onBlur={handlePhoneBlur}
-                      onChange={handleChange}
-                      className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground focus:border-gold h-12 rounded-xl"
+                      value={phoneNumber}
+                      onChange={handlePhoneChange}
+                      className="w-full h-12 px-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition-all outline-none"
+                      placeholder="123-456-7890"
                     />
                   </div>
 
-                  <div className="space-y-2 relative">
-                    <label htmlFor="message" className="text-sm font-medium text-foreground">
-                      Message
+                  <div className="space-y-2">
+                    <label htmlFor="message" className="text-sm font-medium text-gray-300">
+                      {t("contact.form.message")}
                     </label>
-
-                    <Textarea
+                    <textarea
                       id="message"
                       name="message"
-                      placeholder="Your Message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground focus:border-gold resize-none rounded-xl h-32"
-                      rows={6}
+                      required
+                      rows={4}
+                      className="w-full p-4 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 transition-all outline-none resize-none"
+                      placeholder="Tell us about your needs..."
                     />
-
-                    {formData.message.length > 0 && <span className="absolute bottom-3 right-4 text-xs text-muted-foreground">{formData.message.length}</span>}
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2">
-                    <input type="checkbox" id="agree" checked={formData.agree || false} onChange={(e) => setFormData({ ...formData, agree: e.target.checked })} className="w-5 h-5 accent-gold cursor-pointer" />
-                    <label htmlFor="agree" className="text-sm text-muted-foreground cursor-pointer">
-                      I agree to send this message
-                    </label>
-                  </div>
-
-                  <Button
+                  <button
                     type="submit"
-                    size="lg"
-                    disabled={!formData.agree}
-                    className={`w-full group font-semibold px-8 py-6 rounded-xl ${
-                      formData.agree ? "bg-gradient-to-r from-gold to-gold-light text-charcoal shadow-gold hover:shadow-gold-lg" : "bg-muted text-muted-foreground cursor-not-allowed"
-                    }`}
+                    disabled={isSubmitting}
+                    className="w-full h-12 bg-gold hover:bg-gold-dark text-charcoal font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    <span className="flex items-center justify-center gap-2">
-                      {t("contact.send")}
-                      <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </Button>
+                    {isSubmitting ? (
+                      <div className="w-5 h-5 border-2 border-charcoal/30 border-t-charcoal rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        {t("contact.form.submit")}
+                      </>
+                    )}
+                  </button>
                 </form>
-              </div>
+              </CorporateCard>
+            </div>
 
-              <div className="lg:col-span-2 order-2 lg:order-1 -space-y-0.5">
-                {!isMobile && mapIframe}
-                {!isMobile && (
-                  <div className={`glass-card p-6 rounded-2xl backdrop-blur-sm bg-gold/5 border border-gold/20 transition-all duration-1000 ease-out ${isVisible ? "opacity-100 blur-0" : "opacity-0 blur-lg"}`}>
-                    <p className="text-sm text-muted-foreground mb-2">Business Hours</p>
-                    <p className="text-foreground font-medium">Monday - Saturday</p>
-                    <p className="text-foreground font-medium">10:00 - 20:00 WIB</p>
+            <div className="lg:col-span-2 order-2 lg:order-1 space-y-6">
+              <CorporateCard className="p-6 space-y-6 border-white/10 bg-white/5">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-gold/10 text-gold">
+                    <MapPin className="w-6 h-6" />
                   </div>
-                )}
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Visit Us</h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      Jl. Wates Km 3, Ngestiharjo, Kasihan, Bantul,
+                      <br />
+                      Yogyakarta 55182, Indonesia
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-gold/10 text-gold">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Email Us</h3>
+                    <a href="mailto:info@palmmignite.com" className="text-sm text-gray-400 hover:text-gold transition-colors">
+                      info@palmmignite.com
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-gold/10 text-gold">
+                    <Phone className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white mb-1">Call Us</h3>
+                    <a href="tel:+6281234567890" className="text-sm text-gray-400 hover:text-gold transition-colors">
+                      +62 812 3456 7890
+                    </a>
+                  </div>
+                </div>
+              </CorporateCard>
+
+              <div className="h-64 rounded-xl overflow-hidden border border-white/10 grayscale hover:grayscale-0 transition-all duration-500">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.974917646544!2d110.33446697411646!3d-7.792461677338002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a58066236b937%3A0x6854178553176535!2sJl.%20Wates%20No.Km.3%2C%20Onggobayan%2C%20Ngestiharjo%2C%20Kec.%20Kasihan%2C%20Kabupaten%20Bantul%2C%20Daerah%20Istimewa%20Yogyakarta%2055182!5e0!3m2!1sen!2sid!4v1709628876543!5m2!1sen!2sid"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
+                />
               </div>
             </div>
           </div>

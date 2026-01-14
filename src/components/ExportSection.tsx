@@ -1,7 +1,9 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Globe2, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import CountUp from "react-countup";
+import { SectionHeader } from "./ui/corporate/SectionHeader";
+import { CorporateCard } from "./ui/corporate/CorporateCard";
 
 const ExportSection = () => {
   const { t } = useLanguage();
@@ -54,74 +56,55 @@ const ExportSection = () => {
   ];
 
   return (
-    <section id="export" ref={sectionRef} className="py-24 md:py-32 bg-gradient-to-b from-background to-secondary relative">
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-gold rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-gold rounded-full blur-3xl" />
-      </div>
-
+    <section id="export" ref={sectionRef} className="py-16 md:py-24 bg-background relative">
       <div className="container mx-auto px-4 relative">
-        <div className="text-center mb-16 max-w-3xl mx-auto">
-          <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gold/10 rounded-2xl mb-6 border border-gold/20">
-              <Globe2 className="w-8 h-8 text-gold" />
-            </div>
-            <p className="text-gold font-semibold mb-3 tracking-wide uppercase text-sm">Global Presence</p>
-            <h2 className="font-[Onest] text-4xl md:text-5xl font-bold text-foreground mb-4">{t("export.title")}</h2>
-            <p className="text-muted-foreground text-lg">{t("export.subtitle")}</p>
-          </div>
-        </div>
+        <SectionHeader 
+          label="Global Presence"
+          title={t("export.title")}
+          subtitle={t("export.subtitle")}
+        />
 
-        <div className="max-w-6xl mx-auto space-y-8">
+        <div className="max-w-6xl mx-auto space-y-6">
           {regions.map((region, regionIndex) => (
             <div key={regionIndex} className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`} style={{ transitionDelay: `${regionIndex * 150}ms` }}>
-              <div className="glass-card p-6 md:p-8 rounded-2xl backdrop-blur-sm bg-card/40 border border-glass-border hover:border-gold/30 transition-all duration-300">
-                <div className="flex items-center gzap-3 mb-6">
-                  <MapPin className="w-5 h-5 text-gold flex-shrink-0" />
-                  <h3 className="font-semibold text-lg text-foreground">{region.region}</h3>
-                  <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
+              <CorporateCard className="p-6 md:p-8 hover:bg-white/5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 rounded-lg bg-gold/10">
+                    <MapPin className="w-5 h-5 text-gold flex-shrink-0" />
+                  </div>
+                  <h3 className="font-semibold text-lg text-white">{region.region}</h3>
+                  <div className="flex-1 h-px bg-white/10" />
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {region.countries.map((country, countryIndex) => (
                     <div key={countryIndex} className="group relative">
-                      <div className="flex items-center gap-3 p-4 rounded-xl bg-secondary/50 border border-border hover:border-gold/40 hover:bg-secondary transition-all duration-300 cursor-pointer">
-                        <img src={`https://flagicons.lipis.dev/flags/4x3/${country.code}.svg`} alt="" className="w-6" />
-                        <span className="text-sm font-medium text-foreground group-hover:text-gold transition-colors">{country.name}</span>
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-gold/30 hover:bg-gold/5 transition-all duration-300 cursor-pointer">
+                        <img src={`https://flagicons.lipis.dev/flags/4x3/${country.code}.svg`} alt="" className="w-6 rounded-sm" />
+                        <span className="text-sm font-medium text-gray-300 group-hover:text-gold transition-colors">{country.name}</span>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </CorporateCard>
             </div>
           ))}
         </div>
 
-        <div className="mt-16 grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <div className="text-center p-6 glass-card rounded-xl backdrop-blur-sm bg-card/40 border border-glass-border">
-            <p className="text-4xl font-bold text-gold font-[Onest] mb-2">
-              <CountUp end={8} duration={3} enableScrollSpy />+
-            </p>
-            <p className="text-sm text-muted-foreground">Countries Served</p>
-          </div>
-          <div className="text-center p-6 glass-card rounded-xl backdrop-blur-sm bg-card/40 border border-glass-border">
-            <p className="text-4xl font-bold text-gold font-[Onest] mb-2">
-              <CountUp end={5} duration={2} enableScrollSpy />
-            </p>
-            <p className="text-sm text-muted-foreground">Continents</p>
-          </div>
-          <div className="text-center p-6 glass-card rounded-xl backdrop-blur-sm bg-card/40 border border-glass-border">
-            <p className="text-4xl font-bold text-gold font-[Onest] mb-2">
-              <CountUp end={24} duration={3} enableScrollSpy />
-              /
-              <CountUp end={7} duration={3} enableScrollSpy />
-            </p>
-            <p className="text-sm text-muted-foreground">Support</p>
-          </div>
-        </div>
-
-        <div className="text-center mt-12">
-          <p className="text-muted-foreground text-lg">And expanding to more markets worldwide...</p>
+        <div className="mt-12 grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {[
+            { count: 8, label: "Countries Served" },
+            { count: 5, label: "Continents" },
+            { count: 24, label: "Support", suffix: "/7" }
+          ].map((stat, i) => (
+            <CorporateCard key={i} className="text-center p-6 bg-gold/5 border-gold/10">
+              <p className="text-4xl font-bold text-gold font-[Onest] mb-2">
+                <CountUp end={stat.count} duration={3} enableScrollSpy />
+                {stat.suffix || "+"}
+              </p>
+              <p className="text-sm text-gray-400 uppercase tracking-wider">{stat.label}</p>
+            </CorporateCard>
+          ))}
         </div>
       </div>
     </section>

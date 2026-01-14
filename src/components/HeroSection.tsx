@@ -13,14 +13,13 @@ const HeroSection = () => {
       id="home"
       className="
         relative
-        min-h-screen
+        min-h-[85vh]
         flex
         items-center
         w-full
         max-w-full
         overflow-hidden
-        py-24
-        lg:py-0
+        py-10
       "
     >
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
@@ -40,7 +39,7 @@ const HeroSection = () => {
           <div className="grid lg:grid-cols-2 gap-6 items-center">
             <div className="text-center lg:text-left space-y-8 animate-fade-in-left">
               <div className="mt-4">
-                <h1 className="font-[poppins] text-xl sm:text-4xl md:text-5xl lg:text-6xl font-bold !leading-[1.08]">
+                <h1 className="font-[poppins] text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold !leading-[1.1]">
                   <span className="text-foreground">{t("hero.title").split(" ").slice(0, 3).join(" ")}</span>
                   <br />
                   <span className="text-gold bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text animate-shimmer">
@@ -49,7 +48,7 @@ const HeroSection = () => {
                 </h1>
               </div>
 
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
                 Your trusted partner for the perfect sear. <br />
                 Delivering world-class BBQ charcoal from Yogyakarta to pitmasters worldwide.
               </p>
@@ -93,7 +92,7 @@ const HeroSection = () => {
 
             <div className="hidden lg:block animate-fade-in-right">
               <div className="relative">
-                <div className="glass-card p-8 rounded-2xl backdrop-blur-xl bg-card/40 border border-glass-border shadow-2xl">
+                <div className="glass-card p-6 rounded-2xl backdrop-blur-xl bg-card/40 border border-glass-border shadow-2xl">
                   <div className="space-y-6">
                     <div className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold to-gold-dark flex items-center justify-center flex-shrink-0">

@@ -52,7 +52,7 @@ const GallerySection = () => {
   };
 
   return (
-    <section id="gallery" ref={sectionRef} className="py-24 md:py-32 bg-gradient-to-b from-background to-secondary relative">
+    <section id="gallery" ref={sectionRef} className="py-16 md:py-20 bg-gradient-to-b from-background to-secondary relative">
       <div className="absolute inset-0 opacity-5">
         <div
           className="absolute inset-0"
@@ -64,7 +64,7 @@ const GallerySection = () => {
       </div>
 
       <div className="container mx-auto px-4 relative">
-        <div className="text-center mb-16 max-w-3xl mx-auto">
+        <div className="text-center mb-10 max-w-3xl mx-auto">
           <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
             <p className="text-gold font-semibold mb-3 tracking-wide uppercase text-sm">Gallery</p>
             <h2 className="font-[Onest] text-4xl md:text-5xl font-bold text-foreground mb-4">{t("gallery.title")}</h2>
@@ -72,7 +72,7 @@ const GallerySection = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-4 gap-4 max-w-7xl mx-auto">
           {images.map((image, index) => (
             <div key={index} className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`} style={{ transitionDelay: `${index * 150}ms` }}>
               <div

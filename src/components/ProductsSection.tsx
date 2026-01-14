@@ -1,16 +1,12 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import coconutImage from "@/assets/product-coconut.jpg";
-import briquetteImage from "@/assets/product-briquette.jpg";
-import hardwoodImage from "@/assets/product-hardwood.gif";
 import { useEffect, useRef, useState } from "react";
-import { Flame } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
+import { Flame, Timer, Scale, Zap, Droplets, Wind } from "lucide-react";
+import { SectionHeader } from "./ui/corporate/SectionHeader";
+import { CorporateCard } from "./ui/corporate/CorporateCard";
 
 const ProductsSection = () => {
   const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -36,94 +32,114 @@ const ProductsSection = () => {
 
   const products = [
     {
-      title: t("products.coconut"),
-      description: t("products.coconut.desc"),
-      image: coconutImage,
-      specs: ["Export Grade", "BBQ & Shisha Use"],
+      grade: "Grade A",
+      description: "Premium choice for professional grilling and long-lasting heat.",
+      specs: [
+        { label: "Ash Content", value: "Max 5%", icon: Scale },
+        { label: "Calories", value: "Above 7000 Kcal", icon: Flame },
+        { label: "Fix Carbon", value: "Min 75%", icon: Zap },
+        { label: "Moisture", value: "Max 5%", icon: Droplets },
+        { label: "Volatile", value: "Max 15%", icon: Wind },
+        { label: "Time Burn", value: "7-8 Hours", icon: Timer },
+      ],
+      highlight: true,
+    },
+    {
+      grade: "Grade A+",
+      description: "Balanced composition for versatile usage and consistent performance.",
+      specs: [
+        { label: "Ash Content", value: "8-10%", icon: Scale },
+        { label: "Calories", value: "6500 - 7500 Kcal", icon: Flame },
+        { label: "Fixed Carbon", value: "70-75%", icon: Zap },
+        { label: "Moisture", value: "Max 5%", icon: Droplets },
+        { label: "Volatile", value: "15% - 18%", icon: Wind },
+        { label: "Time Burn", value: "6-7 Hours", icon: Timer },
+      ],
+      highlight: false,
     },
   ];
 
-  const navigate = useNavigate();
-
-
   return (
-    <section id="products" ref={sectionRef} className="py-24 md:py-32 bg-gradient-to-b from-secondary to-background relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gold/5 blur-3xl rounded-full" />
+    <section id="products" ref={sectionRef} className="py-20 md:py-28 bg-background relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-gold/5 rounded-full blur-[100px]" />
+      </div>
 
-      <div className="container mx-auto px-4 relative">
-        <div className="text-center mb-16 max-w-3xl mx-auto">
-          <div className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            <p className="text-gold font-semibold mb-3 tracking-wide uppercase text-sm">Our Products</p>
-            <h2 className="font-[Onest] text-4xl md:text-5xl font-bold text-foreground mb-4">{t("products.title")}</h2>
-            <p className="text-muted-foreground text-lg">{t("products.subtitle")}</p>
-          </div>
-        </div>
+      <div className="container mx-auto px-4 relative z-10">
+        <SectionHeader 
+          label="Technical Specifications"
+          title={t("products.title")}
+          subtitle="Discover the precise standards of our premium charcoal grades."
+        />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {products.map((product, index) => (
             <div
               key={index}
               className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
               style={{ transitionDelay: `${index * 200}ms` }}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
             >
-              <div className="group relative h-full">
-                <div
-                  className={`relative h-full rounded-2xl overflow-hidden bg-card border border-border shadow-card transition-all duration-500 ${
-                    hoveredIndex === index ? "shadow-card-hover border-gold/30 -translate-y-2" : ""
-                  }`}
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    <img src={product.image} alt={product.title} className={`w-full h-full object-cover transition-transform duration-700 ${hoveredIndex === index ? "scale-110" : "scale-100"}`} />
-                    <div className={`absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/60 to-transparent transition-opacity duration-500 ${hoveredIndex === index ? "opacity-90" : "opacity-80"}`} />    
+              <CorporateCard 
+                className={`h-full p-8 flex flex-col relative group ${product.highlight ? 'border-gold/30 bg-gold/5' : 'border-white/10 bg-white/5'}`}
+                hoverEffect={true}
+              >
+                {product.highlight && (
+                  <div className="absolute top-0 right-0 bg-gold text-charcoal text-xs font-bold px-3 py-1 rounded-bl-lg">
+                    BEST SELLER
                   </div>
+                )}
 
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h3 className="font-[Onest] text-2xl font-bold text-foreground mb-2 group-hover:text-gold transition-colors">{product.title}</h3>
-                      <p className="text-muted-foreground text-[13px] leading-relaxed">{product.description}</p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      {product.specs.map((spec, i) => (
-                        <span key={i} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gold/10 text-gold border border-gold/20">
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    <button onClick={() => navigate("/product/charcoal")} className={`inline-flex items-center gap-2 text-sm font-semibold text-gold transition-all ${hoveredIndex === index ? "gap-3" : ""}`}>
-                      View Specifications
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div
-                    className={`absolute inset-0 rounded-2xl transition-opacity duration-500 pointer-events-none ${hoveredIndex === index ? "opacity-100" : "opacity-0"}`}
-                    style={{
-                      background: "linear-gradient(135deg, transparent 0%, hsla(45, 90%, 55%, 0.1) 50%, transparent 100%)",
-                    }}
-                  />
+                <div className="mb-8 text-center">
+                  <h3 className={`font-[Onest] text-4xl font-bold mb-3 ${product.highlight ? 'text-gold' : 'text-white'}`}>
+                    {product.grade}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed max-w-xs mx-auto">
+                    {product.description}
+                  </p>
                 </div>
-              </div>
+
+                <div className="space-y-4 flex-1">
+                  {product.specs.map((spec, i) => {
+                    const Icon = spec.icon;
+                    return (
+                      <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-black/20 border border-white/5 hover:border-gold/20 transition-colors group/item">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-md ${product.highlight ? 'bg-gold/10 text-gold' : 'bg-white/5 text-gray-400 group-hover/item:text-gold group-hover/item:bg-gold/10'} transition-colors`}>
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm text-gray-300 font-medium">{spec.label}</span>
+                        </div>
+                        <span className="text-sm font-bold text-white tracking-wide">{spec.value}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-white/10 text-center">
+                  <button 
+                    onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                    className={`w-full py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
+                      product.highlight 
+                        ? 'bg-gold text-charcoal hover:bg-gold-dark shadow-gold hover:shadow-gold-lg' 
+                        : 'bg-white/10 text-white hover:bg-white/20 hover:text-gold'
+                    }`}
+                  >
+                    Request Quote for {product.grade}
+                  </button>
+                </div>
+              </CorporateCard>
             </div>
           ))}
         </div>
 
-        <div className="text-center mt-16">
-          <p className="text-muted-foreground mb-6">Need custom specifications or bulk orders?</p>
-          <button
-            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-gold to-gold text-charcoal font-semibold shadow-gold hover:shadow-gold-lg transition-all duration-300 hover:scale-105"
-          >
-            Request a Quote
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
+        <div className="mt-16 text-center">
+          <p className="text-gray-500 text-sm">
+            * Specifications may vary slightly depending on the raw material batch. 
+            <br className="hidden md:block" />
+            Contact us for the most up-to-date lab reports.
+          </p>
         </div>
       </div>
     </section>

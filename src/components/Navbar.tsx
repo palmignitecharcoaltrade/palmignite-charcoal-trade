@@ -81,7 +81,7 @@ const Navbar = () => {
     <>
       <nav className={`fixed top-0 w-full z-50 transition-colors duration-200 ${isScrolled ? "bg-charcoal/85 backdrop-blur shadow-lg" : "bg-transparent"}`}>
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16">
             <div onClick={() => scrollToSection("home")} className="cursor-pointer flex items-center gap-3">
               <img src="/web-app-manifest-192x192.png" className="w-8 rounded-full" />
               <h1 className="text-gold font-bold text-xl hidden lg:block">Palmignite Charcoal</h1>
