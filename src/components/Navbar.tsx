@@ -90,7 +90,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <div onClick={() => scrollToSection("home")} className="cursor-pointer flex items-center gap-3">
-              <img src="/logo.png" className="w-8 rounded-full" />
+              <img src="/web-app-manifest-192x192.png" className="w-8 rounded-full" />
               <h1 className="text-gold font-bold text-xl hidden lg:block">Palmignite Charcoal</h1>
               <h1 className="text-gold font-bold text-xl lg:hidden">Palmignite Charcoal</h1>
             </div>
