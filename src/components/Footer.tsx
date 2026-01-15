@@ -19,6 +19,10 @@ const Footer: React.FC<FooterProps> = ({ mobileMap }) => {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <img src="/web-app-manifest-192x192.png" className="w-12 h-12" alt="Palmignite Logo" />
+              <div>
+                <h3 className="font-semibold text-sm">PALMIGNITE CHARCOAL TRADE</h3>
+                <p className="text-[13px] text-muted-foreground">Trade Export Company</p>
+              </div>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed font-light max-w-xs">{t("footer.company.desc")}</p>
 
@@ -134,7 +138,21 @@ const Footer: React.FC<FooterProps> = ({ mobileMap }) => {
             © 2025{" "}
             <span
               onClick={() => document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })}
-              className="text-foreground font-medium hover:text-primary cursor-pointer transition-colors"
+              className="
+    relative inline-block cursor-pointer
+    text-primary font-medium
+
+    after:content-['']
+    after:absolute after:left-0 after:-bottom-0.5
+    after:h-[1px] after:w-full after:bg-current
+
+    after:scale-x-0
+    after:origin-right
+    after:transition-transform after:duration-300 after:ease-out
+
+    hover:after:origin-left
+    hover:after:scale-x-100
+  "
             >
               Palmignite Charcoal Trade
             </span>

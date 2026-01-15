@@ -74,7 +74,7 @@ export const BlogPost = () => {
           <div className="flex flex-wrap items-center gap-6 text-muted-foreground border-b border-border/50 pb-8">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              <span className="font-medium">Admin Palmignite Charcoal Trade</span>
+              <span className="font-medium">Palmignite Charcoal Trade</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
