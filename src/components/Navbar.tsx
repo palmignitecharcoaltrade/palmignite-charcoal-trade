@@ -197,7 +197,7 @@ const Navbar = () => {
                 setLanguage(lang.code as "en" | "id" | "ko"); // type-safe
                 setShowLangDropdown(false);
               }}
-              className={`block w-full text-left px-5 py-3 text-sm hover:bg-white/10 ${language === lang.code ? "text-gold" : "text-white"} ${idx !== languages.length - 1 ? "border-b border-white/10" : ""}`} // border tipis kecuali terakhir
+              className={`block w-full text-left px-5 py-3 text-sm rounded-sm hover:bg-white/10 ${language === lang.code ? "text-gold" : "text-white"} ${idx !== languages.length - 1 ? "border-b border-white/10" : ""}`} // border tipis kecuali terakhir
             >
               {lang.name}
             </button>

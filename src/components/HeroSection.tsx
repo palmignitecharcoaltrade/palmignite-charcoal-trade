@@ -60,7 +60,7 @@ const HeroSection = () => {
                       behavior: "smooth",
                     })
                   }
-                  className="border-2 border-gold/30 text-gold hover:bg-gold/10"
+                  className="border-2 border-gold/30 text-gold hover:text-gold hover:bg-gold/10"
                 >
                   {t("hero.cta")}
                 </Button>
@@ -87,6 +87,7 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
+            
 
             <div className="animate-fade-in-right">
               <div className="relative">

@@ -35,17 +35,14 @@ const ContactSection = () => {
     };
   }, []);
 
-  const formatPhoneNumber = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
-    if (numbers.length <= 3) return numbers;
-    if (numbers.length <= 6) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-    return `${numbers.slice(0, 3)}-${numbers.slice(3, 6)}-${numbers.slice(6, 10)}`;
-  };
+ const formatPhoneNumber = (value: string) => {
+   return value.replace(/\D/g, "").slice(0, 15); // hanya angka, max 15 digit
+ };
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    setPhoneNumber(formatted);
-  };
+ const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   setPhoneNumber(formatPhoneNumber(e.target.value));
+ };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,18 +156,22 @@ const ContactSection = () => {
 
             <div className="lg:col-span-2 order-2 lg:order-1 space-y-8">
               <div className="space-y-6">
-                <div className="h-72 rounded-2xl overflow-hidden border border-white/5 grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl">
-                  <iframe
-                    src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=Yogyakarta,%20Indonesia+(Palmignite)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="w-full h-full"
-                  />
-                </div>
+                <div className="relative h-72 rounded-2xl overflow-hidden border border-white/5 shadow-2xl">
+
+  {/* Map */}
+  <iframe
+    src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Yogyakarta,%20Indonesia+(Palmignite)&t=&z=14&ie=UTF8&iwloc=B&output=embed"
+    className="w-full h-full grayscale"
+    style={{ border: 0 }}
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  />
+
+  {/* Dark overlay */}
+  <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+</div>
+
                 <div className="flex items-start gap-5 group">
                   <div className="w-12 h-12 rounded-xl bg-gold/10 text-gold flex items-center justify-center shrink-0 group-hover:bg-gold group-hover:text-charcoal transition-all duration-300 border border-gold/20">
                     <MapPin className="w-6 h-6" />

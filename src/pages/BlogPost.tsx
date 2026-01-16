@@ -40,9 +40,9 @@ export const BlogPost = () => {
   if (!post) {
     return (
       <div className="min-h-screen pt-24 flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">Post not found</h1>
+        <h1 className="text-3xl font-bold">Post not found</h1>
         <Link to="/blog">
-          <Button variant="outline">Back to Blog</Button>
+          <Button variant="outline">find other articles</Button>
         </Link>
       </div>
     );

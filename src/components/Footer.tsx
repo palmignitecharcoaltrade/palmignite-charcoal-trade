@@ -18,10 +18,15 @@ const Footer: React.FC<FooterProps> = ({ mobileMap }) => {
           {/* Company Information */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <img src="/web-app-manifest-192x192.png" className="w-12 h-12" alt="Palmignite Logo" />
+              <span onClick={() => document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })}>
+                <img src="/web-app-manifest-192x192.png" className="w-12 h-12 cursor-pointer" alt="Palmignite Logo" />
+              </span>
               <div>
-                <h3 className="font-semibold text-sm">PALMIGNITE CHARCOAL TRADE</h3>
-                <p className="text-[13px] text-muted-foreground">Trade Export Company</p>
+                <span onClick={() => document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })}>
+
+                <h3 className="font-semibold text-sm cursor-pointer">PALMIGNITE CHARCOAL TRADE</h3>
+                <p className="text-[13px] text-muted-foreground cursor-pointer">Trade Export Company</p>
+                </span>
               </div>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed font-light max-w-xs">{t("footer.company.desc")}</p>
@@ -98,7 +103,7 @@ const Footer: React.FC<FooterProps> = ({ mobileMap }) => {
                 <div className="flex flex-col">
                   <span className="text-[10px] text-muted-foreground/50 uppercase tracking-wider">{t("footer.contact.email.label")}</span>
                   <a href="mailto:palmignitecharcoaltrade@gmail.com" className="font-medium hover:text-primary transition-colors">
-                    info@palmignitecharcoaltrade.com
+                    info@palmignitetrade.com
                   </a>
                 </div>
               </li>
