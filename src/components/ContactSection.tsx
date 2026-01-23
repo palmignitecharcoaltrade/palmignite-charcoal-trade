@@ -157,8 +157,7 @@ const ContactSection = () => {
                     height="600"
                     scrolling="no"
                     src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=umbulharjo%20jogja+(Palmignite%20Charcoal%20Trade)&amp;t=k&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
-                  >
-                  </iframe>
+                  ></iframe>
 
                   {/* Dark overlay */}
                   <div className="absolute inset-0 bg-black/25 pointer-events-none" />
@@ -181,7 +180,7 @@ const ContactSection = () => {
                   <div>
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">{t("contact.info.email")}</h3>
                     <a href="mailto:palmignitecharcoaltrade@gmail.com" className="text-sm text-white hover:text-gold transition-colors font-medium">
-                      info@palmignitetrade.com
+                      info@palmignitetrade.comm
                     </a>
                   </div>
                 </div>
