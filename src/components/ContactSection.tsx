@@ -153,13 +153,12 @@ const ContactSection = () => {
                 <div className="relative h-72 rounded-2xl overflow-hidden border border-white/5 shadow-2xl">
                   {/* Map */}
                   <iframe
-                    src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Yogyakarta,%20Indonesia+(Palmignite)&t=&z=14&ie=UTF8&iwloc=B&output=embed"
-                    className="w-full h-full grayscale"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
+                    width="100%"
+                    height="600"
+                    scrolling="no"
+                    src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=umbulharjo%20jogja+(Palmignite%20Charcoal%20Trade)&amp;t=k&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                  >
+                  </iframe>
 
                   {/* Dark overlay */}
                   <div className="absolute inset-0 bg-black/25 pointer-events-none" />
