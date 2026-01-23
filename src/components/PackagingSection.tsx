@@ -75,7 +75,7 @@ const PackagingSection = () => {
               </div>
             ))}
 
-            {/* FULL WIDTH */}
+
             <div className="col-span-2 ">
               <p className="mt-3 text-gray-400">{t("note.shape")}</p>
             </div>
